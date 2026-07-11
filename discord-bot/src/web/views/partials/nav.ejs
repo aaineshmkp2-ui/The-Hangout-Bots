@@ -1,0 +1,21 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="brand-mark">TH</div>
+    <span>Hangout Bot</span>
+  </div>
+
+  <a href="/dashboard" class="nav-link <%= path === '/dashboard' ? 'active' : '' %>">◧ Your Servers</a>
+  <% if (typeof guild !== 'undefined') { %>
+    <a href="/dashboard/<%= guild.id %>" class="nav-link <%= path === '/dashboard/' + guild.id ? 'active' : '' %>">⌁ Control Panel</a>
+    <a href="/dashboard/<%= guild.id %>/giveaways" class="nav-link <%= path.includes('/giveaways') ? 'active' : '' %>">🎉 Giveaways</a>
+    <a href="/dashboard/<%= guild.id %>/warnings" class="nav-link <%= path.includes('/warnings') ? 'active' : '' %>">⚠ Warnings</a>
+  <% } %>
+
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="avatar-dot"><%= user.username.charAt(0).toUpperCase() %></div>
+      <span><%= user.username %></span>
+    </div>
+    <a href="/auth/logout" class="nav-link" style="margin-top:4px;">↩ Log out</a>
+  </div>
+</aside>

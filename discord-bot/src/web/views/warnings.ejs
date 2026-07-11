@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="shell">
+    <%- include('partials/nav') %>
+    <main class="main">
+      <div class="crumb"><a href="/dashboard">Your Servers</a> / <a href="/dashboard/<%= guild.id %>"><%= guild.name %></a> / Warnings</div>
+      <div class="topbar">
+        <div>
+          <h1>Warnings</h1>
+          <div class="subtitle">Moderation history</div>
+        </div>
+      </div>
+
+      <form class="search-row" method="GET" action="/dashboard/<%= guild.id %>/warnings">
+        <input type="text" name="user" placeholder="Search by Discord user ID…" value="<%= search %>">
+        <button type="submit" class="btn btn-ghost">Search</button>
+      </form>
+
+      <% if (warnings.length === 0) { %>
+        <div class="empty-state">
+          <div class="glyph">⚠</div>
+          <p><%= search ? 'No warnings found for that user ID.' : 'No warnings recorded yet. Showing latest 50 once they exist.' %></p>
+        </div>
+      <% } else { %>
+        <table>
+          <thead><tr><th>User ID</th><th>Reason</th><th>Moderator</th><th>Date</th></tr></thead>
+          <tbody>
+            <% warnings.forEach(w => { %>
+              <tr>
+                <td class="mono"><%= w.user_id %></td>
+                <td><%= w.reason %></td>
+                <td class="mono"><%= w.moderator_id %></td>
+                <td><%= new Date(w.created_at).toLocaleString() %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </main>
+  </div>
+</body>
+</html>

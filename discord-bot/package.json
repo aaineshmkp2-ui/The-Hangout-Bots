@@ -1,7 +1,7 @@
 {
   "name": "all-in-one-discord-bot",
   "version": "1.0.0",
-  "description": "Free all-in-one Discord bot: welcome, tickets, giveaways, role panels, moderation, with an in-Discord admin panel.",
+  "description": "Free all-in-one Discord bot: welcome, tickets, giveaways, role panels, moderation, with an in-Discord admin panel and a web dashboard.",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
@@ -11,6 +11,9 @@
   "dependencies": {
     "better-sqlite3": "^11.3.0",
     "discord.js": "^14.15.3",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.0",
+    "express-session": "^1.18.0"
   }
 }

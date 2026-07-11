@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="shell">
+    <%- include('partials/nav') %>
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1>Your Servers</h1>
+          <div class="subtitle">Pick a server to configure</div>
+        </div>
+      </div>
+
+      <% if (servers.length === 0) { %>
+        <div class="empty-state">
+          <div class="glyph">◧</div>
+          <p>You don't manage any servers the bot recognizes yet.</p>
+        </div>
+      <% } else { %>
+        <div class="guild-grid">
+          <% servers.forEach(function(s) { %>
+            <% if (s.botPresent) { %>
+              <a href="/dashboard/<%= s.id %>" class="guild-card active-link">
+            <% } else { %>
+              <div class="guild-card disabled">
+            <% } %>
+              <div class="guild-icon">
+                <% if (s.icon) { %><img src="<%= s.icon %>" alt="" style="width:100%;height:100%;border-radius:12px;object-fit:cover;">
+                <% } else { %><%= s.name.charAt(0).toUpperCase() %><% } %>
+              </div>
+              <h3><%= s.name %></h3>
+              <div class="status-line">
+                <span class="led <%= s.botPresent ? 'on' : 'off' %>"></span>
+                <%= s.botPresent ? 'Bot connected' : 'Bot not invited' %>
+              </div>
+            <% if (s.botPresent) { %></a><% } else { %></div><% } %>
+          <% }); %>
+        </div>
+      <% } %>
+    </main>
+  </div>
+</body>
+</html>
