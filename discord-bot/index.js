@@ -1,7 +1,16 @@
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
 const { Client, Collection, GatewayIntentBits, Partials } = require('discord.js');
+
+// Tiny web server so free hosts like Render see this as a "web service"
+// and have something to health-check / ping to keep it awake.
+const PORT = process.env.PORT || 3000;
+http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Bot is running.');
+}).listen(PORT, () => console.log(`Keep-alive server listening on port ${PORT}`));
 
 const client = new Client({
   intents: [
