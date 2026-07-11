@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
-const { getGuildConfig } = require('../database');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -11,6 +10,7 @@ module.exports = {
     .addIntegerOption(o => o.setName('delete_days').setDescription('Days of messages to delete (0-7)').setMinValue(0).setMaxValue(7)),
 
   async execute(interaction) {
+    const { getGuildConfig } = require('../database');
     const user = interaction.options.getUser('user');
     const reason = interaction.options.getString('reason') || 'No reason provided';
     const deleteDays = interaction.options.getInteger('delete_days') || 0;

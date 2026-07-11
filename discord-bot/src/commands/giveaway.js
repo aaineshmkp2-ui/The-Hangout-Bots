@@ -1,6 +1,4 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { db } = require('../database');
-const giveawayManager = require('../handlers/giveawayManager');
 
 function parseDuration(str) {
   const match = /^(\d+)\s*(s|m|h|d)$/i.exec(str.trim());
@@ -35,6 +33,8 @@ module.exports = {
     ),
 
   async execute(interaction) {
+    const { db } = require('../database');
+    const giveawayManager = require('../handlers/giveawayManager');
     const sub = interaction.options.getSubcommand();
 
     if (sub === 'start') {

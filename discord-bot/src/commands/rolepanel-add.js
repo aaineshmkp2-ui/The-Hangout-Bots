@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits, ChannelType } = require('discord.js');
-const { db } = require('../database');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -12,6 +11,7 @@ module.exports = {
     .addStringOption(o => o.setName('emoji').setDescription('Optional emoji for the button')),
 
   async execute(interaction) {
+    const { db } = require('../database');
     const role = interaction.options.getRole('role');
     const label = interaction.options.getString('label');
     const channel = interaction.options.getChannel('channel');

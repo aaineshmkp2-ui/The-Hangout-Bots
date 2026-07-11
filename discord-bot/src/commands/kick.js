@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
-const { getGuildConfig } = require('../database');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -10,6 +9,7 @@ module.exports = {
     .addStringOption(o => o.setName('reason').setDescription('Reason')),
 
   async execute(interaction) {
+    const { getGuildConfig } = require('../database');
     const user = interaction.options.getUser('user');
     const reason = interaction.options.getString('reason') || 'No reason provided';
     const member = await interaction.guild.members.fetch(user.id).catch(() => null);

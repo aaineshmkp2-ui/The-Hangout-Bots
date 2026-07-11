@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
-const { getGuildConfig } = require('../database');
 
 function parseDuration(str) {
   const match = /^(\d+)\s*(s|m|h|d)$/i.exec(str.trim());
@@ -20,6 +19,7 @@ module.exports = {
     .addStringOption(o => o.setName('reason').setDescription('Reason')),
 
   async execute(interaction) {
+    const { getGuildConfig } = require('../database');
     const user = interaction.options.getUser('user');
     const durationStr = interaction.options.getString('duration');
     const reason = interaction.options.getString('reason') || 'No reason provided';

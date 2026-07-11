@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
-const { db } = require('../database');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -9,6 +8,7 @@ module.exports = {
     .addUserOption(o => o.setName('user').setDescription('User to check').setRequired(true)),
 
   async execute(interaction) {
+    const { db } = require('../database');
     const user = interaction.options.getUser('user');
     const rows = db.prepare('SELECT * FROM warnings WHERE guild_id = ? AND user_id = ? ORDER BY created_at DESC')
       .all(interaction.guild.id, user.id);
