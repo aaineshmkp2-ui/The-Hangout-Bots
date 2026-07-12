@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="shell">
+    <%- include('partials/nav') %>
+    <main class="main">
+      <div class="crumb"><a href="/dashboard">Your Servers</a> / <a href="/dashboard/<%= guild.id %>"><%= guild.name %></a> / Reaction Roles</div>
+      <div class="topbar">
+        <div>
+          <h1>Reaction Roles</h1>
+          <div class="subtitle">Add new ones with <code>/reactionrole-add</code> in Discord</div>
+        </div>
+      </div>
+
+      <% if (list.length === 0) { %>
+        <div class="empty-state">
+          <div class="glyph">🏷️</div>
+          <p>No reaction roles set up yet. Run <code>/reactionrole-add</code> in your server.</p>
+        </div>
+      <% } else { %>
+        <table>
+          <thead><tr><th>Message ID</th><th>Emoji</th><th>Role</th></tr></thead>
+          <tbody>
+            <% list.forEach(r => { %>
+              <tr>
+                <td class="mono"><%= r.message_id %></td>
+                <td><%= r.emoji %></td>
+                <td><%= r.roleName %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </main>
+  </div>
+</body>
+</html>

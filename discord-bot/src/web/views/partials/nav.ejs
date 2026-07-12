@@ -7,6 +7,9 @@
   <a href="/dashboard" class="nav-link <%= path === '/dashboard' ? 'active' : '' %>">◧ Your Servers</a>
   <% if (typeof guild !== 'undefined') { %>
     <a href="/dashboard/<%= guild.id %>" class="nav-link <%= path === '/dashboard/' + guild.id ? 'active' : '' %>">⌁ Control Panel</a>
+    <a href="/dashboard/<%= guild.id %>/leaderboard" class="nav-link <%= path.includes('/leaderboard') ? 'active' : '' %>">🏆 Leaderboard</a>
+    <a href="/dashboard/<%= guild.id %>/invites" class="nav-link <%= path.includes('/invites') ? 'active' : '' %>">📨 Invites</a>
+    <a href="/dashboard/<%= guild.id %>/reaction-roles" class="nav-link <%= path.includes('/reaction-roles') ? 'active' : '' %>">🏷️ Reaction Roles</a>
     <a href="/dashboard/<%= guild.id %>/giveaways" class="nav-link <%= path.includes('/giveaways') ? 'active' : '' %>">🎉 Giveaways</a>
     <a href="/dashboard/<%= guild.id %>/warnings" class="nav-link <%= path.includes('/warnings') ? 'active' : '' %>">⚠ Warnings</a>
   <% } %>

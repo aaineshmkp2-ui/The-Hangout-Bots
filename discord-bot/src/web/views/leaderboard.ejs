@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="shell">
+    <%- include('partials/nav') %>
+    <main class="main">
+      <div class="crumb"><a href="/dashboard">Your Servers</a> / <a href="/dashboard/<%= guild.id %>"><%= guild.name %></a> / Leaderboard</div>
+      <div class="topbar">
+        <div>
+          <h1>Leaderboard</h1>
+          <div class="subtitle">Top members by XP</div>
+        </div>
+      </div>
+
+      <% if (top.length === 0) { %>
+        <div class="empty-state">
+          <div class="glyph">🏆</div>
+          <p>No one has earned XP yet.</p>
+        </div>
+      <% } else { %>
+        <table>
+          <thead><tr><th>#</th><th>Member</th><th>Level</th><th>XP</th></tr></thead>
+          <tbody>
+            <% top.forEach((row, i) => { %>
+              <tr>
+                <td><%= i + 1 %></td>
+                <td class="mono"><%= row.user_id %></td>
+                <td><%= row.level %></td>
+                <td><%= row.xp %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </main>
+  </div>
+</body>
+</html>

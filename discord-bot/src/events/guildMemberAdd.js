@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { getGuildConfig } = require('../database');
+const { handleMemberJoin } = require('../handlers/inviteTracker');
 
 function fillPlaceholders(text, member) {
   return text
@@ -13,6 +14,9 @@ module.exports = {
   name: 'guildMemberAdd',
   async execute(member) {
     const cfg = getGuildConfig(member.guild.id);
+
+    // Invite tracking runs independently of welcome messages.
+    handleMemberJoin(member).catch(() => {});
 
     if (cfg.autorole_id) {
       const role = member.guild.roles.cache.get(cfg.autorole_id);

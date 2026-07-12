@@ -23,6 +23,7 @@
         <div class="stat-chip"><div class="num"><%= stats.openTickets %></div><div class="label">Open tickets</div></div>
         <div class="stat-chip"><div class="num"><%= stats.activeGiveaways %></div><div class="label">Active giveaways</div></div>
         <div class="stat-chip"><div class="num"><%= stats.warningCount %></div><div class="label">Total warnings</div></div>
+        <div class="stat-chip"><div class="num"><%= stats.rankedMembers %></div><div class="label">Ranked members</div></div>
       </div>
 
       <div class="panel-grid">
@@ -227,13 +228,163 @@
           </div>
         </div>
 
+        <!-- LEVELING -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">⭐</div>
+              <div>
+                <div class="module-title">Leveling</div>
+                <div class="module-desc"><%= stats.rankedMembers %> ranked members · <a href="/dashboard/<%= guild.id %>/leaderboard" style="color:var(--teal);" onclick="event.stopPropagation()">View leaderboard</a></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.leveling_enabled ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/leveling">
+              <div class="checkbox-row">
+                <label class="switch">
+                  <input type="checkbox" name="enabled" <%= cfg.leveling_enabled ? 'checked' : '' %>>
+                  <span class="switch-track"></span>
+                </label>
+                <label>Enabled</label>
+              </div>
+              <div class="field">
+                <label>Level-up announcement channel</label>
+                <select name="channel">
+                  <option value="">— Post in the channel they leveled up in —</option>
+                  <% textChannels.forEach(c => { %>
+                    <option value="<%= c.id %>" <%= cfg.level_up_channel === c.id ? 'selected' : '' %>>#<%= c.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="field">
+                <label>Level-up message</label>
+                <textarea name="message" placeholder="🎉 {user} just reached level {level}!"><%= cfg.level_up_message || '' %></textarea>
+                <div class="pill-row">
+                  <span class="pill">{user}</span><span class="pill">{username}</span><span class="pill">{server}</span><span class="pill">{level}</span>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- INVITE TRACKER -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">📨</div>
+              <div>
+                <div class="module-title">Invite Tracker</div>
+                <div class="module-desc"><a href="/dashboard/<%= guild.id %>/invites" style="color:var(--teal);" onclick="event.stopPropagation()">View invite leaderboard</a></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.invite_tracker_enabled ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/invite-tracker">
+              <div class="checkbox-row">
+                <label class="switch">
+                  <input type="checkbox" name="enabled" <%= cfg.invite_tracker_enabled ? 'checked' : '' %>>
+                  <span class="switch-track"></span>
+                </label>
+                <label>Enabled</label>
+              </div>
+              <p style="color:var(--text-muted);font-size:13px;margin-top:0;">Tracks who invited each new member. Check with <code>/invites</code> in Discord.</p>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- JAIL -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">⛓️</div>
+              <div>
+                <div class="module-title">Jail System</div>
+                <div class="module-desc"><%= cfg.jail_role_id ? 'Configured' : 'Not configured' %></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.jail_role_id ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/jail">
+              <div class="field">
+                <label>Jail role</label>
+                <select name="role">
+                  <option value="">— Select a role —</option>
+                  <% roles.forEach(r => { %>
+                    <option value="<%= r.id %>" <%= cfg.jail_role_id === r.id ? 'selected' : '' %>><%= r.name %></option>
+                  <% }) %>
+                </select>
+                <div class="hint">Deny "View Channel" for this role everywhere except the jail channel below.</div>
+              </div>
+              <div class="field">
+                <label>Jail channel</label>
+                <select name="channel">
+                  <option value="">— Select a channel —</option>
+                  <% textChannels.forEach(c => { %>
+                    <option value="<%= c.id %>" <%= cfg.jail_channel_id === c.id ? 'selected' : '' %>>#<%= c.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- BLACKLIST -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">🚫</div>
+              <div>
+                <div class="module-title">Word Blacklist</div>
+                <div class="module-desc"><%= stats.blacklistWords %> blocked word<%= stats.blacklistWords === 1 ? '' : 's' %></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.blacklist_enabled ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/blacklist">
+              <div class="checkbox-row">
+                <label class="switch">
+                  <input type="checkbox" name="enabled" <%= cfg.blacklist_enabled ? 'checked' : '' %>>
+                  <span class="switch-track"></span>
+                </label>
+                <label>Enabled</label>
+              </div>
+              <div class="field">
+                <label>Blocked words</label>
+                <textarea name="words" placeholder="one per line, or comma-separated"><%= blacklistWordList.join('\n') %></textarea>
+                <div class="hint">Messages containing any of these get deleted automatically. Saving replaces the full list.</div>
+              </div>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
         <!-- SELF-ROLES + GIVEAWAYS INFO -->
         <div class="module-card">
           <div class="module-head" data-toggle>
             <div class="module-head-left">
               <div class="module-icon">🏷️</div>
               <div>
-                <div class="module-title">Self-Role Panels & Giveaways</div>
+                <div class="module-title">Self-Role Panels, Reaction Roles & Giveaways</div>
                 <div class="module-desc">Managed with slash commands</div>
               </div>
             </div>
@@ -243,15 +394,19 @@
           </div>
           <div class="module-body">
             <p style="color:var(--text-muted);font-size:13px;margin-top:0;">
-              These two run through Discord slash commands rather than this dashboard, since they involve live message posting:
+              These run through Discord slash commands since they involve live message posting, but you can browse the results here:
             </p>
             <div class="field">
-              <label>Self-role panels</label>
-              <div class="hint" style="margin-top:0;"><code>/rolepanel-add role: label: channel: emoji:</code> — run once per role you want offered.</div>
+              <label>Self-role button panels</label>
+              <div class="hint" style="margin-top:0;"><code>/rolepanel-add role: label: channel: emoji:</code></div>
+            </div>
+            <div class="field">
+              <label>Reaction roles (react-to-existing-message)</label>
+              <div class="hint" style="margin-top:0;"><code>/reactionrole-add message_id: emoji: role:</code> — <a href="/dashboard/<%= guild.id %>/reaction-roles" style="color:var(--teal);">view configured ones</a></div>
             </div>
             <div class="field">
               <label>Giveaways</label>
-              <div class="hint" style="margin-top:0;"><code>/giveaway start prize: duration: winners:</code> — view active/ended ones on the <a href="/dashboard/<%= guild.id %>/giveaways" style="color:var(--teal);">Giveaways page</a>.</div>
+              <div class="hint" style="margin-top:0;"><code>/giveaway start prize: duration: winners:</code> — <a href="/dashboard/<%= guild.id %>/giveaways" style="color:var(--teal);">view history</a></div>
             </div>
           </div>
         </div>
@@ -263,11 +418,10 @@
   <script>
     document.querySelectorAll('[data-toggle]').forEach(function(head) {
       head.addEventListener('click', function(e) {
-        if (e.target.closest('.switch')) return;
+        if (e.target.closest('.switch') || e.target.closest('a')) return;
         head.closest('.module-card').classList.toggle('open');
       });
     });
-    // Auto-open the first module that has unsaved-looking empty state, else leave collapsed
   </script>
 </body>
 </html>

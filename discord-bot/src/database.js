@@ -59,7 +59,52 @@ CREATE TABLE IF NOT EXISTS warnings (
   reason TEXT,
   created_at INTEGER
 );
+
+CREATE TABLE IF NOT EXISTS user_levels (
+  guild_id TEXT,
+  user_id TEXT,
+  xp INTEGER DEFAULT 0,
+  level INTEGER DEFAULT 0,
+  last_xp_at INTEGER DEFAULT 0,
+  PRIMARY KEY (guild_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS invite_uses (
+  guild_id TEXT,
+  inviter_id TEXT,
+  uses INTEGER DEFAULT 0,
+  PRIMARY KEY (guild_id, inviter_id)
+);
+
+CREATE TABLE IF NOT EXISTS reaction_roles (
+  guild_id TEXT,
+  message_id TEXT,
+  emoji TEXT,
+  role_id TEXT,
+  PRIMARY KEY (message_id, emoji)
+);
+
+CREATE TABLE IF NOT EXISTS blacklist_words (
+  guild_id TEXT,
+  word TEXT,
+  PRIMARY KEY (guild_id, word)
+);
 `);
+
+// Safe migrations for columns added after initial release.
+// SQLite errors on duplicate ADD COLUMN, so each is wrapped individually.
+const migrations = [
+  "ALTER TABLE guild_config ADD COLUMN leveling_enabled INTEGER DEFAULT 0",
+  "ALTER TABLE guild_config ADD COLUMN level_up_channel TEXT",
+  "ALTER TABLE guild_config ADD COLUMN level_up_message TEXT",
+  "ALTER TABLE guild_config ADD COLUMN invite_tracker_enabled INTEGER DEFAULT 0",
+  "ALTER TABLE guild_config ADD COLUMN jail_role_id TEXT",
+  "ALTER TABLE guild_config ADD COLUMN jail_channel_id TEXT",
+  "ALTER TABLE guild_config ADD COLUMN blacklist_enabled INTEGER DEFAULT 0",
+];
+for (const sql of migrations) {
+  try { db.exec(sql); } catch (e) { /* column already exists, ignore */ }
+}
 
 function getGuildConfig(guildId) {
   let row = db.prepare('SELECT * FROM guild_config WHERE guild_id = ?').get(guildId);
