@@ -89,6 +89,39 @@ CREATE TABLE IF NOT EXISTS blacklist_words (
   word TEXT,
   PRIMARY KEY (guild_id, word)
 );
+
+CREATE TABLE IF NOT EXISTS afk_status (
+  guild_id TEXT,
+  user_id TEXT,
+  reason TEXT,
+  set_at INTEGER,
+  PRIMARY KEY (guild_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS reminders (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  guild_id TEXT,
+  channel_id TEXT,
+  user_id TEXT,
+  message TEXT,
+  remind_at INTEGER,
+  sent INTEGER DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS starboard_posts (
+  guild_id TEXT,
+  original_message_id TEXT UNIQUE,
+  starboard_message_id TEXT,
+  star_count INTEGER DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS tags (
+  guild_id TEXT,
+  name TEXT,
+  content TEXT,
+  created_by TEXT,
+  PRIMARY KEY (guild_id, name)
+);
 `);
 
 // Safe migrations for columns added after initial release.
@@ -101,6 +134,10 @@ const migrations = [
   "ALTER TABLE guild_config ADD COLUMN jail_role_id TEXT",
   "ALTER TABLE guild_config ADD COLUMN jail_channel_id TEXT",
   "ALTER TABLE guild_config ADD COLUMN blacklist_enabled INTEGER DEFAULT 0",
+  "ALTER TABLE guild_config ADD COLUMN starboard_channel TEXT",
+  "ALTER TABLE guild_config ADD COLUMN starboard_threshold INTEGER DEFAULT 3",
+  "ALTER TABLE guild_config ADD COLUMN starboard_enabled INTEGER DEFAULT 0",
+  "ALTER TABLE guild_config ADD COLUMN antinuke_enabled INTEGER DEFAULT 0",
 ];
 for (const sql of migrations) {
   try { db.exec(sql); } catch (e) { /* column already exists, ignore */ }

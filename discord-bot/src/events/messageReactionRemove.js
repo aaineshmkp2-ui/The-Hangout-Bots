@@ -1,4 +1,5 @@
 const { db } = require('../database');
+const { handleStarReaction } = require('../handlers/starboardManager');
 
 module.exports = {
   name: 'messageReactionRemove',
@@ -8,6 +9,8 @@ module.exports = {
       if (reaction.partial) await reaction.fetch();
     } catch { return; }
     if (!reaction.message.guild) return;
+
+    handleStarReaction(reaction).catch(() => {});
 
     const emojiKey = reaction.emoji.id || reaction.emoji.name;
     const row = db.prepare('SELECT * FROM reaction_roles WHERE message_id = ? AND emoji = ?')

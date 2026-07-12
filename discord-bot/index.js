@@ -11,6 +11,7 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildInvites,
+    GatewayIntentBits.GuildModeration,
   ],
   partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.GuildMember],
 });
@@ -38,8 +39,12 @@ for (const file of fs.readdirSync(eventsPath).filter(f => f.endsWith('.js'))) {
   else client.on(event.name, (...args) => event.execute(...args, client));
 }
 
-// Resume any giveaways that were still running before a restart
+// Resume any giveaways or reminders that were still pending before a restart
 const { resumeGiveaways } = require('./src/handlers/giveawayManager');
-client.once('ready', () => resumeGiveaways(client));
+const { resumeReminders } = require('./src/handlers/reminderManager');
+client.once('ready', () => {
+  resumeGiveaways(client);
+  resumeReminders(client);
+});
 
 client.login(process.env.DISCORD_TOKEN);

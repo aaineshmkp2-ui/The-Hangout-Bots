@@ -14,11 +14,16 @@ Free, self-hosted Discord bot with **both** an in-Discord admin panel (`/panel`)
 - **Invite tracker** — see who invited who, `/invites`, web leaderboard page
 - **Word blacklist** — auto-delete messages containing blocked words, managed via `/blacklist` or the dashboard
 - **Jail system** — `/jail-setup`, `/jail`, `/unjail` to restrict a member to one channel
+- **Starboard** — messages with enough ⭐ reactions get reposted to a highlights channel
+- **Anti-Nuke** — auto-quarantines (strips roles from) anyone who deletes 3+ channels/roles or bans 3+ members within 10 seconds; logs it, never auto-bans
+- **AFK status** — `/afk`, auto-clears when you post again, notifies anyone who @mentions you
+- **Reminders** — `/remind`, survives bot restarts
+- **Slowmode** — `/slowmode` on any channel
 - **Moderation** — `/kick` `/ban` `/timeout` `/warn` `/warnings` `/clear` `/lock` `/unlock` `/snipe`, with optional mod-log channel
 - **In-Discord admin panel** — `/panel` gives staff buttons/dropdowns to configure everything
 - **Web dashboard** — sign in with Discord, pick a server, configure every module from a browser with live channel/role dropdowns
 
-Not included yet (each needs its own dedicated build): music/voice playback, and text minigames (Wordle, 2048, etc.) — these need a separate audio/game subsystem.
+Not included yet: music/voice playback and text minigames (Wordle, 2048, etc.) — separate audio/game subsystem. Social media notifications (Reddit/Twitch/YouTube/TikTok) need API keys from those platforms that only you can obtain — ask if you want these wired in once you have credentials.
 
 ## Requirements
 

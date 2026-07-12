@@ -378,6 +378,81 @@
           </div>
         </div>
 
+        <!-- STARBOARD -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">⭐</div>
+              <div>
+                <div class="module-title">Starboard</div>
+                <div class="module-desc"><%= stats.starboardPosts %> post<%= stats.starboardPosts === 1 ? '' : 's' %> starred</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.starboard_enabled ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/starboard">
+              <div class="checkbox-row">
+                <label class="switch">
+                  <input type="checkbox" name="enabled" <%= cfg.starboard_enabled ? 'checked' : '' %>>
+                  <span class="switch-track"></span>
+                </label>
+                <label>Enabled</label>
+              </div>
+              <div class="field">
+                <label>Starboard channel</label>
+                <select name="channel">
+                  <option value="">— Select a channel —</option>
+                  <% textChannels.forEach(c => { %>
+                    <option value="<%= c.id %>" <%= cfg.starboard_channel === c.id ? 'selected' : '' %>>#<%= c.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="field">
+                <label>⭐ threshold</label>
+                <input type="text" name="threshold" value="<%= cfg.starboard_threshold || 3 %>" style="max-width:100px;">
+                <div class="hint">Messages need at least this many star reactions to get posted.</div>
+              </div>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- ANTI-NUKE -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">🛡️</div>
+              <div>
+                <div class="module-title">Anti-Nuke</div>
+                <div class="module-desc">Auto-quarantines rapid mass deletions/bans</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.antinuke_enabled ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/antinuke">
+              <div class="checkbox-row">
+                <label class="switch">
+                  <input type="checkbox" name="enabled" <%= cfg.antinuke_enabled ? 'checked' : '' %>>
+                  <span class="switch-track"></span>
+                </label>
+                <label>Enabled</label>
+              </div>
+              <p style="color:var(--text-muted);font-size:13px;">
+                If a non-owner member deletes 3+ channels/roles or bans 3+ members within 10 seconds, the bot strips their roles and logs it to your mod-log channel. It never auto-bans — just quarantines for you to review.
+              </p>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
         <!-- SELF-ROLES + GIVEAWAYS INFO -->
         <div class="module-card">
           <div class="module-head" data-toggle>

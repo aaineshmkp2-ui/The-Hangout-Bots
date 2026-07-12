@@ -42,12 +42,13 @@ router.get('/:guildId', requireGuildAccess, (req, res) => {
   const blacklistWords = db.prepare('SELECT COUNT(*) c FROM blacklist_words WHERE guild_id = ?').get(guild.id).c;
   const reactionRoleCount = db.prepare('SELECT COUNT(*) c FROM reaction_roles WHERE guild_id = ?').get(guild.id).c;
   const blacklistWordList = db.prepare('SELECT word FROM blacklist_words WHERE guild_id = ?').all(guild.id).map(r => r.word);
+  const starboardPosts = db.prepare('SELECT COUNT(*) c FROM starboard_posts WHERE guild_id = ?').get(guild.id).c;
 
   res.render('dashboard', {
     title: guild.name,
     guild: { id: guild.id, name: guild.name, memberCount: guild.memberCount, icon: guild.iconURL() },
     cfg, textChannels, categories, roles, blacklistWordList,
-    stats: { openTickets, activeGiveaways, warningCount, rankedMembers, blacklistWords, reactionRoleCount },
+    stats: { openTickets, activeGiveaways, warningCount, rankedMembers, blacklistWords, reactionRoleCount, starboardPosts },
     flash: req.session.flash || null,
   });
   req.session.flash = null;
@@ -165,6 +166,26 @@ router.post('/:guildId/blacklist', requireGuildAccess, (req, res) => {
 
   updateGuildConfig(guildId, { blacklist_enabled: enabled ? 1 : 0 });
   setFlash(req, 'Blacklist saved.');
+  res.redirect(`/dashboard/${req.params.guildId}`);
+});
+
+router.post('/:guildId/starboard', requireGuildAccess, (req, res) => {
+  const { updateGuildConfig } = require('../../database');
+  const { enabled, channel, threshold } = req.body;
+  updateGuildConfig(req.params.guildId, {
+    starboard_enabled: enabled ? 1 : 0,
+    starboard_channel: channel || null,
+    starboard_threshold: Math.max(1, parseInt(threshold, 10) || 3),
+  });
+  setFlash(req, 'Starboard settings saved.');
+  res.redirect(`/dashboard/${req.params.guildId}`);
+});
+
+router.post('/:guildId/antinuke', requireGuildAccess, (req, res) => {
+  const { updateGuildConfig } = require('../../database');
+  const { enabled } = req.body;
+  updateGuildConfig(req.params.guildId, { antinuke_enabled: enabled ? 1 : 0 });
+  setFlash(req, 'Anti-nuke settings saved.');
   res.redirect(`/dashboard/${req.params.guildId}`);
 });
 
