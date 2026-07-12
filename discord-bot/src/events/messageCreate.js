@@ -1,6 +1,7 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const { getGuildConfig, db } = require('../database');
 const { addXp } = require('../handlers/levelingManager');
+const { checkMessage } = require('../handlers/autoModManager');
 
 function fillPlaceholders(text, member, level) {
   return text
@@ -34,6 +35,28 @@ module.exports = {
         if (afk) {
           message.reply({ content: `💤 ${user.username} is AFK: ${afk.reason}` }).catch(() => {});
         }
+      }
+    }
+
+    // Custom commands: exact-match trigger anywhere in the message content
+    const trigger = message.content.toLowerCase().trim();
+    if (trigger.length > 0 && trigger.length <= 32) {
+      const custom = db.prepare('SELECT * FROM custom_commands WHERE guild_id = ? AND trigger = ?')
+        .get(message.guild.id, trigger);
+      if (custom) {
+        message.channel.send(custom.response).catch(() => {});
+      }
+    }
+
+    // Auto-moderation: mass mentions, invite links, excessive caps
+    if (cfg.automod_enabled && !message.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
+      const reason = checkMessage(message);
+      if (reason) {
+        await message.delete().catch(() => {});
+        message.channel.send({ content: `${message.author}, that message was removed (${reason}).` })
+          .then(m => setTimeout(() => m.delete().catch(() => {}), 5000))
+          .catch(() => {});
+        return;
       }
     }
 

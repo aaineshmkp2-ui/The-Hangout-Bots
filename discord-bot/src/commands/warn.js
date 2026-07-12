@@ -30,5 +30,24 @@ module.exports = {
         .setDescription(`**User:** ${user.tag} (${user.id})\n**Moderator:** ${interaction.user.tag}\n**Reason:** ${reason}\n**Total warnings:** ${count}`)
         .setTimestamp()] }).catch(() => {});
     }
+
+    // Auto-punish once the warning count crosses the configured threshold
+    if (cfg.warn_threshold > 0 && count >= cfg.warn_threshold) {
+      const member = await interaction.guild.members.fetch(user.id).catch(() => null);
+      if (member) {
+        const autoReason = `Reached ${count} warnings (auto-punish threshold: ${cfg.warn_threshold})`;
+        if (cfg.warn_action === 'ban' && member.bannable) {
+          await member.ban({ reason: autoReason }).catch(() => {});
+          interaction.followUp(`🔨 **${user.tag}** was automatically banned for reaching the warning threshold.`).catch(() => {});
+        } else if (cfg.warn_action === 'kick' && member.kickable) {
+          await member.kick(autoReason).catch(() => {});
+          interaction.followUp(`👢 **${user.tag}** was automatically kicked for reaching the warning threshold.`).catch(() => {});
+        } else if (member.moderatable) {
+          const ms = (cfg.warn_timeout_minutes || 10) * 60 * 1000;
+          await member.timeout(ms, autoReason).catch(() => {});
+          interaction.followUp(`⏱️ **${user.tag}** was automatically timed out for reaching the warning threshold.`).catch(() => {});
+        }
+      }
+    }
   },
 };

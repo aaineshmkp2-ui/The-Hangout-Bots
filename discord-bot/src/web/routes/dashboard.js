@@ -87,16 +87,23 @@ router.post('/:guildId/leave', requireGuildAccess, (req, res) => {
 
 router.post('/:guildId/tickets', requireGuildAccess, async (req, res) => {
   const { updateGuildConfig } = require('../../database');
-  const { category, panelChannel, postPanel } = req.body;
-  updateGuildConfig(req.params.guildId, { ticket_category: category || null });
+  const { category, panelChannel, postPanel, panelTitle, panelDescription, panelColor, panelImage } = req.body;
+  updateGuildConfig(req.params.guildId, {
+    ticket_category: category || null,
+    ticket_panel_title: panelTitle || null,
+    ticket_panel_description: panelDescription || null,
+    ticket_panel_color: panelColor || null,
+    ticket_panel_image: panelImage || null,
+  });
 
   if (postPanel && panelChannel) {
     const channel = req.botGuild.channels.cache.get(panelChannel);
     if (channel) {
       const embed = new EmbedBuilder()
-        .setColor(0x5865f2)
-        .setTitle('🎫 Need Help?')
-        .setDescription('Click the button below to open a private support ticket.');
+        .setColor(panelColor || 0x5865f2)
+        .setTitle(panelTitle || '🎫 Need Help?')
+        .setDescription(panelDescription || 'Click the button below to open a private support ticket.');
+      if (panelImage) embed.setImage(panelImage);
       const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('create_ticket').setLabel('Create Ticket').setStyle(ButtonStyle.Primary).setEmoji('🎫')
       );
@@ -105,8 +112,63 @@ router.post('/:guildId/tickets', requireGuildAccess, async (req, res) => {
       return res.redirect(`/dashboard/${req.params.guildId}`);
     }
   }
-  setFlash(req, 'Ticket category saved.');
+  setFlash(req, 'Ticket settings saved.');
   res.redirect(`/dashboard/${req.params.guildId}`);
+});
+
+router.post('/:guildId/automod', requireGuildAccess, (req, res) => {
+  const { updateGuildConfig } = require('../../database');
+  const { enabled } = req.body;
+  updateGuildConfig(req.params.guildId, { automod_enabled: enabled ? 1 : 0 });
+  setFlash(req, 'Auto-mod settings saved.');
+  res.redirect(`/dashboard/${req.params.guildId}`);
+});
+
+router.post('/:guildId/warn-settings', requireGuildAccess, (req, res) => {
+  const { updateGuildConfig } = require('../../database');
+  const { threshold, action, timeoutMinutes } = req.body;
+  updateGuildConfig(req.params.guildId, {
+    warn_threshold: Math.max(0, parseInt(threshold, 10) || 0),
+    warn_action: ['timeout', 'kick', 'ban'].includes(action) ? action : 'timeout',
+    warn_timeout_minutes: Math.max(1, parseInt(timeoutMinutes, 10) || 10),
+  });
+  setFlash(req, 'Warning auto-punish settings saved.');
+  res.redirect(`/dashboard/${req.params.guildId}`);
+});
+
+router.get('/:guildId/embed-generator', requireGuildAccess, (req, res) => {
+  const guild = req.botGuild;
+  const textChannels = [...guild.channels.cache.filter(c => c.type === ChannelType.GuildText).values()]
+    .map(c => ({ id: c.id, name: c.name }));
+  res.render('embed-generator', {
+    title: `Embed Generator — ${guild.name}`,
+    guild: { id: guild.id, name: guild.name },
+    textChannels,
+    flash: req.session.flash || null,
+  });
+  req.session.flash = null;
+});
+
+router.post('/:guildId/embed-generator', requireGuildAccess, async (req, res) => {
+  const { channel: channelId, title, description, color, image, thumbnail, footer } = req.body;
+  const channel = req.botGuild.channels.cache.get(channelId);
+
+  if (!channel || !description) {
+    req.session.flash = { message: 'Pick a channel and write a description first.', type: 'error' };
+    return res.redirect(`/dashboard/${req.params.guildId}/embed-generator`);
+  }
+
+  const embed = new EmbedBuilder().setDescription(description).setColor(color || 0x5865f2);
+  if (title) embed.setTitle(title);
+  if (image) embed.setImage(image);
+  if (thumbnail) embed.setThumbnail(thumbnail);
+  if (footer) embed.setFooter({ text: footer });
+
+  const sent = await channel.send({ embeds: [embed] }).catch(() => null);
+  req.session.flash = sent
+    ? { message: `Sent to #${channel.name}.` }
+    : { message: 'Failed to send — check your image URLs and color format.', type: 'error' };
+  res.redirect(`/dashboard/${req.params.guildId}/embed-generator`);
 });
 
 router.post('/:guildId/autorole', requireGuildAccess, (req, res) => {

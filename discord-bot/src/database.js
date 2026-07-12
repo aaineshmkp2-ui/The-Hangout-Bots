@@ -132,6 +132,30 @@ CREATE TABLE IF NOT EXISTS auto_messages (
   next_run INTEGER,
   enabled INTEGER DEFAULT 1
 );
+
+CREATE TABLE IF NOT EXISTS auto_purge (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  guild_id TEXT,
+  channel_id TEXT,
+  interval_ms INTEGER,
+  next_run INTEGER,
+  enabled INTEGER DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS custom_commands (
+  guild_id TEXT,
+  trigger TEXT,
+  response TEXT,
+  created_by TEXT,
+  PRIMARY KEY (guild_id, trigger)
+);
+
+CREATE TABLE IF NOT EXISTS voice_text_links (
+  guild_id TEXT,
+  voice_channel_id TEXT,
+  text_channel_id TEXT,
+  PRIMARY KEY (guild_id, voice_channel_id)
+);
 `);
 
 // Safe migrations for columns added after initial release.
@@ -151,6 +175,14 @@ const migrations = [
   "ALTER TABLE guild_config ADD COLUMN welcome_image TEXT",
   "ALTER TABLE guild_config ADD COLUMN leave_image TEXT",
   "ALTER TABLE guild_config ADD COLUMN welcome_color TEXT",
+  "ALTER TABLE guild_config ADD COLUMN automod_enabled INTEGER DEFAULT 0",
+  "ALTER TABLE guild_config ADD COLUMN warn_threshold INTEGER DEFAULT 0",
+  "ALTER TABLE guild_config ADD COLUMN warn_action TEXT DEFAULT 'timeout'",
+  "ALTER TABLE guild_config ADD COLUMN warn_timeout_minutes INTEGER DEFAULT 10",
+  "ALTER TABLE guild_config ADD COLUMN ticket_panel_title TEXT",
+  "ALTER TABLE guild_config ADD COLUMN ticket_panel_description TEXT",
+  "ALTER TABLE guild_config ADD COLUMN ticket_panel_color TEXT",
+  "ALTER TABLE guild_config ADD COLUMN ticket_panel_image TEXT",
 ];
 for (const sql of migrations) {
   try { db.exec(sql); } catch (e) { /* column already exists, ignore */ }

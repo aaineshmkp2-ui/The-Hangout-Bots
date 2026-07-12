@@ -10,6 +10,13 @@ Free, self-hosted Discord bot with **both** an in-Discord admin panel (`/panel`)
 - **Self-role panels** — button-based "click to get a role" panels
 - **Reaction roles** — react to any existing message to get a role
 - **Auto-role** — automatically give new members a role on join
+- **Auto-Moderation** — deletes messages with mass mentions, invite links, or excessive caps (toggle in dashboard)
+- **Warning auto-punish** — set a warning threshold that auto-times-out/kicks/bans, configurable in the dashboard
+- **Web Embed Generator** — build and send a fully custom embed (title, description, color, image, thumbnail, footer) straight from the dashboard, no slash command needed
+- **Ticket panel customization** — custom title, description, color, and banner image for your ticket panel, editable in the dashboard
+- **Auto-purge** — `/autopurge add|list|remove` clears a channel on a recurring schedule
+- **Custom commands** — `/customcommand add|list|remove`, type the trigger in chat and the bot replies (different from `/tag`, which needs the slash command)
+- **Voice-Text Linking** — `/voicelink add|list|remove` auto-opens a text channel for anyone who joins a linked voice channel, and revokes it when they leave
 - **Custom embeds** — `/embed-send` posts a fully custom message with your own title, color, image, and thumbnail
 - **Custom tags** — `/tag create|edit|delete|list|send` for reusable text snippets
 - **Auto-messages** — `/automessage add|list|remove` posts something on a recurring schedule

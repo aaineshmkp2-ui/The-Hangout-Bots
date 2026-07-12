@@ -168,9 +168,96 @@
                 </select>
                 <div class="hint">Posts a "Create Ticket" button message. Optional — do this once per channel.</div>
               </div>
+              <div class="field">
+                <label>Panel title</label>
+                <input type="text" name="panelTitle" placeholder="🎫 Need Help?" value="<%= cfg.ticket_panel_title || '' %>">
+              </div>
+              <div class="field">
+                <label>Panel description</label>
+                <textarea name="panelDescription" placeholder="Click the button below to open a private support ticket."><%= cfg.ticket_panel_description || '' %></textarea>
+              </div>
+              <div class="field">
+                <label>Panel color</label>
+                <input type="text" name="panelColor" placeholder="#5865F2" value="<%= cfg.ticket_panel_color || '' %>" style="max-width:140px;">
+              </div>
+              <div class="field">
+                <label>Panel banner image URL</label>
+                <input type="text" name="panelImage" placeholder="https://example.com/banner.png" value="<%= cfg.ticket_panel_image || '' %>">
+              </div>
               <div class="checkbox-row">
                 <input type="checkbox" name="postPanel" id="postPanel" value="1" style="width:16px;height:16px;">
                 <label for="postPanel">Post the panel now using the channel above</label>
+              </div>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- AUTO MOD -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">🧹</div>
+              <div>
+                <div class="module-title">Auto-Moderation</div>
+                <div class="module-desc">Mass mentions, invite links, excessive caps</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.automod_enabled ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/automod">
+              <div class="checkbox-row">
+                <label class="switch">
+                  <input type="checkbox" name="enabled" <%= cfg.automod_enabled ? 'checked' : '' %>>
+                  <span class="switch-track"></span>
+                </label>
+                <label>Enabled</label>
+              </div>
+              <p style="color:var(--text-muted);font-size:13px;">
+                Auto-deletes messages with 5+ mentions, Discord invite links, or excessive CAPS LOCK. Members with Manage Messages are exempt.
+              </p>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- WARNING AUTO-PUNISH -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">⚡</div>
+              <div>
+                <div class="module-title">Warning Auto-Punish</div>
+                <div class="module-desc"><%= cfg.warn_threshold > 0 ? (cfg.warn_threshold + ' warnings → ' + cfg.warn_action) : 'Not configured' %></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.warn_threshold > 0 ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/warn-settings">
+              <div class="field">
+                <label>Warnings before auto-punish</label>
+                <input type="text" name="threshold" value="<%= cfg.warn_threshold || 0 %>" style="max-width:100px;">
+                <div class="hint">Set to 0 to disable.</div>
+              </div>
+              <div class="field">
+                <label>Action</label>
+                <select name="action">
+                  <option value="timeout" <%= cfg.warn_action === 'timeout' ? 'selected' : '' %>>Timeout</option>
+                  <option value="kick" <%= cfg.warn_action === 'kick' ? 'selected' : '' %>>Kick</option>
+                  <option value="ban" <%= cfg.warn_action === 'ban' ? 'selected' : '' %>>Ban</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Timeout duration (minutes, if action is Timeout)</label>
+                <input type="text" name="timeoutMinutes" value="<%= cfg.warn_timeout_minutes || 10 %>" style="max-width:100px;">
               </div>
               <button type="submit" class="btn btn-primary">Save changes</button>
             </form>

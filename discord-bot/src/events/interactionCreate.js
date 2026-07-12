@@ -147,10 +147,13 @@ async function handleChannelSelect(interaction) {
   }
 
   if (id === 'cs_ticket_panel_channel') {
+    const { getGuildConfig } = require('../database');
+    const cfg = getGuildConfig(interaction.guild.id);
     const embed = new EmbedBuilder()
-      .setColor(0x5865f2)
-      .setTitle('🎫 Need Help?')
-      .setDescription('Click the button below to open a private support ticket.');
+      .setColor(cfg.ticket_panel_color || 0x5865f2)
+      .setTitle(cfg.ticket_panel_title || '🎫 Need Help?')
+      .setDescription(cfg.ticket_panel_description || 'Click the button below to open a private support ticket.');
+    if (cfg.ticket_panel_image) embed.setImage(cfg.ticket_panel_image);
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder().setCustomId('create_ticket').setLabel('Create Ticket').setStyle(ButtonStyle.Primary).setEmoji('🎫')
     );

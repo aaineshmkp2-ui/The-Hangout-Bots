@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="shell">
+    <%- include('partials/nav') %>
+    <main class="main">
+      <div class="crumb"><a href="/dashboard">Your Servers</a> / <a href="/dashboard/<%= guild.id %>"><%= guild.name %></a> / Embed Generator</div>
+      <div class="topbar">
+        <div>
+          <h1>Embed Generator</h1>
+          <div class="subtitle">Build and send a fully custom message</div>
+        </div>
+      </div>
+
+      <% if (flash) { %>
+        <div class="flash" style="<%= flash.type === 'error' ? 'background:rgba(229,72,77,0.08);border-color:rgba(229,72,77,0.3);color:var(--danger);' : '' %>">
+          <%= flash.type === 'error' ? '⚠' : '✓' %> <%= flash.message %>
+        </div>
+      <% } %>
+
+      <div class="module-card open" style="max-width:600px;">
+        <div class="module-body" style="padding-top:20px;border-top:none;">
+          <form method="POST" action="/dashboard/<%= guild.id %>/embed-generator">
+            <div class="field">
+              <label>Channel</label>
+              <select name="channel" required>
+                <option value="">— Select a channel —</option>
+                <% textChannels.forEach(c => { %>
+                  <option value="<%= c.id %>">#<%= c.name %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="field">
+              <label>Title (optional)</label>
+              <input type="text" name="title" placeholder="Announcement">
+            </div>
+            <div class="field">
+              <label>Description</label>
+              <textarea name="description" placeholder="Main message text. Use \n for line breaks." required style="min-height:120px;"></textarea>
+            </div>
+            <div class="field">
+              <label>Color</label>
+              <input type="text" name="color" placeholder="#5865F2" style="max-width:140px;">
+            </div>
+            <div class="field">
+              <label>Large image URL (optional)</label>
+              <input type="text" name="image" placeholder="https://example.com/image.png">
+            </div>
+            <div class="field">
+              <label>Thumbnail URL (optional)</label>
+              <input type="text" name="thumbnail" placeholder="https://example.com/icon.png">
+            </div>
+            <div class="field">
+              <label>Footer text (optional)</label>
+              <input type="text" name="footer" placeholder="Posted by the team">
+            </div>
+            <button type="submit" class="btn btn-primary">Send embed</button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

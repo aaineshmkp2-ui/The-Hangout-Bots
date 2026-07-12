@@ -12,6 +12,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildInvites,
     GatewayIntentBits.GuildModeration,
+    GatewayIntentBits.GuildVoiceStates,
   ],
   partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.GuildMember],
 });
@@ -39,14 +40,16 @@ for (const file of fs.readdirSync(eventsPath).filter(f => f.endsWith('.js'))) {
   else client.on(event.name, (...args) => event.execute(...args, client));
 }
 
-// Resume any giveaways, reminders, or recurring messages that were still pending before a restart
+// Resume any giveaways, reminders, or recurring messages/purges that were still pending before a restart
 const { resumeGiveaways } = require('./src/handlers/giveawayManager');
 const { resumeReminders } = require('./src/handlers/reminderManager');
 const { resumeAutoMessages } = require('./src/handlers/autoMessageManager');
+const { resumeAutoPurges } = require('./src/handlers/autoPurgeManager');
 client.once('ready', () => {
   resumeGiveaways(client);
   resumeReminders(client);
   resumeAutoMessages(client);
+  resumeAutoPurges(client);
 });
 
 client.login(process.env.DISCORD_TOKEN);
