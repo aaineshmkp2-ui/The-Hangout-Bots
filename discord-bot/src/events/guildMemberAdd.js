@@ -28,11 +28,12 @@ module.exports = {
       if (!channel) return;
       const text = cfg.welcome_message || 'Welcome {user} to **{server}**! We now have {membercount} members.';
       const embed = new EmbedBuilder()
-        .setColor(0x57f287)
+        .setColor(cfg.welcome_color || 0x57f287)
         .setTitle('👋 New Member!')
         .setDescription(fillPlaceholders(text, member))
         .setThumbnail(member.user.displayAvatarURL())
         .setTimestamp();
+      if (cfg.welcome_image) embed.setImage(cfg.welcome_image);
       channel.send({ embeds: [embed] }).catch(() => {});
     }
   },

@@ -23,6 +23,7 @@ module.exports = {
       .setDescription(fillPlaceholders(text, member))
       .setThumbnail(member.user.displayAvatarURL())
       .setTimestamp();
+    if (cfg.leave_image) embed.setImage(cfg.leave_image);
     channel.send({ embeds: [embed] }).catch(() => {});
   },
 };

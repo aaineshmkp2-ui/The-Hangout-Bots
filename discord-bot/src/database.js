@@ -122,6 +122,16 @@ CREATE TABLE IF NOT EXISTS tags (
   created_by TEXT,
   PRIMARY KEY (guild_id, name)
 );
+
+CREATE TABLE IF NOT EXISTS auto_messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  guild_id TEXT,
+  channel_id TEXT,
+  message TEXT,
+  interval_ms INTEGER,
+  next_run INTEGER,
+  enabled INTEGER DEFAULT 1
+);
 `);
 
 // Safe migrations for columns added after initial release.
@@ -138,6 +148,9 @@ const migrations = [
   "ALTER TABLE guild_config ADD COLUMN starboard_threshold INTEGER DEFAULT 3",
   "ALTER TABLE guild_config ADD COLUMN starboard_enabled INTEGER DEFAULT 0",
   "ALTER TABLE guild_config ADD COLUMN antinuke_enabled INTEGER DEFAULT 0",
+  "ALTER TABLE guild_config ADD COLUMN welcome_image TEXT",
+  "ALTER TABLE guild_config ADD COLUMN leave_image TEXT",
+  "ALTER TABLE guild_config ADD COLUMN welcome_color TEXT",
 ];
 for (const sql of migrations) {
   try { db.exec(sql); } catch (e) { /* column already exists, ignore */ }

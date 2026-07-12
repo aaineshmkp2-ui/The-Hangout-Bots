@@ -10,6 +10,10 @@ Free, self-hosted Discord bot with **both** an in-Discord admin panel (`/panel`)
 - **Self-role panels** — button-based "click to get a role" panels
 - **Reaction roles** — react to any existing message to get a role
 - **Auto-role** — automatically give new members a role on join
+- **Custom embeds** — `/embed-send` posts a fully custom message with your own title, color, image, and thumbnail
+- **Custom tags** — `/tag create|edit|delete|list|send` for reusable text snippets
+- **Auto-messages** — `/automessage add|list|remove` posts something on a recurring schedule
+- **Welcome/Leave images** — add a custom banner image and embed color, configurable in the dashboard
 - **Leveling** — XP from chatting, level-up announcements, `/rank`, `/leaderboard`, web leaderboard page
 - **Invite tracker** — see who invited who, `/invites`, web leaderboard page
 - **Word blacklist** — auto-delete messages containing blocked words, managed via `/blacklist` or the dashboard

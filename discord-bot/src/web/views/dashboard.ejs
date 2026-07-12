@@ -68,6 +68,15 @@
                   <span class="pill">{user}</span><span class="pill">{username}</span><span class="pill">{server}</span><span class="pill">{membercount}</span>
                 </div>
               </div>
+              <div class="field">
+                <label>Banner image URL</label>
+                <input type="text" name="image" placeholder="https://example.com/banner.png" value="<%= cfg.welcome_image || '' %>">
+                <div class="hint">Optional — shown as a large image at the bottom of the embed.</div>
+              </div>
+              <div class="field">
+                <label>Embed color</label>
+                <input type="text" name="color" placeholder="#57F287" value="<%= cfg.welcome_color || '' %>" style="max-width:140px;">
+              </div>
               <button type="submit" class="btn btn-primary">Save changes</button>
             </form>
           </div>
@@ -112,6 +121,10 @@
                 <div class="pill-row">
                   <span class="pill">{user}</span><span class="pill">{username}</span><span class="pill">{server}</span><span class="pill">{membercount}</span>
                 </div>
+              </div>
+              <div class="field">
+                <label>Banner image URL</label>
+                <input type="text" name="image" placeholder="https://example.com/banner.png" value="<%= cfg.leave_image || '' %>">
               </div>
               <button type="submit" class="btn btn-primary">Save changes</button>
             </form>

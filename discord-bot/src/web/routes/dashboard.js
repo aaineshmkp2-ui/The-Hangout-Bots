@@ -60,11 +60,13 @@ function setFlash(req, message, type = 'success') {
 
 router.post('/:guildId/welcome', requireGuildAccess, (req, res) => {
   const { updateGuildConfig } = require('../../database');
-  const { channel, message, enabled } = req.body;
+  const { channel, message, enabled, image, color } = req.body;
   updateGuildConfig(req.params.guildId, {
     welcome_channel: channel || null,
     welcome_message: message || null,
     welcome_enabled: enabled ? 1 : 0,
+    welcome_image: image || null,
+    welcome_color: color || null,
   });
   setFlash(req, 'Welcome settings saved.');
   res.redirect(`/dashboard/${req.params.guildId}`);
@@ -72,11 +74,12 @@ router.post('/:guildId/welcome', requireGuildAccess, (req, res) => {
 
 router.post('/:guildId/leave', requireGuildAccess, (req, res) => {
   const { updateGuildConfig } = require('../../database');
-  const { channel, message, enabled } = req.body;
+  const { channel, message, enabled, image } = req.body;
   updateGuildConfig(req.params.guildId, {
     leave_channel: channel || null,
     leave_message: message || null,
     leave_enabled: enabled ? 1 : 0,
+    leave_image: image || null,
   });
   setFlash(req, 'Leave settings saved.');
   res.redirect(`/dashboard/${req.params.guildId}`);
