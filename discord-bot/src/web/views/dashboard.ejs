@@ -35,6 +35,59 @@
       <div class="panel-grid">
         <div class="section-label" id="section-community">Community</div>
 
+        <!-- BRANDING -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">🎨</div>
+              <div>
+                <div class="module-title">Branding & DM Notifications</div>
+                <div class="module-desc"><%= cfg.embed_accent_color ? ('Accent: ' + cfg.embed_accent_color) : 'Using default colors' %></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.embed_accent_color ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/branding">
+              <div class="field">
+                <label>Accent color</label>
+                <input type="text" name="accentColor" placeholder="#5865F2" value="<%= cfg.embed_accent_color || '' %>" style="max-width:140px;">
+                <div class="hint">Used by /userinfo, /serverinfo, /avatar, /poll, and /embed-send when no color is given.</div>
+              </div>
+              <div class="checkbox-row">
+                <label class="switch">
+                  <input type="checkbox" name="dmEnabled" <%= cfg.mod_dm_enabled ? 'checked' : '' %>>
+                  <span class="switch-track"></span>
+                </label>
+                <label>DM members when they're kicked/banned/timed out/warned</label>
+              </div>
+              <div class="field">
+                <label>Kick DM message</label>
+                <textarea name="dmKick" placeholder="You were kicked from {server}. Reason: {reason}"><%= cfg.dm_kick_message || '' %></textarea>
+              </div>
+              <div class="field">
+                <label>Ban DM message</label>
+                <textarea name="dmBan" placeholder="You were banned from {server}. Reason: {reason}"><%= cfg.dm_ban_message || '' %></textarea>
+              </div>
+              <div class="field">
+                <label>Timeout DM message</label>
+                <textarea name="dmTimeout" placeholder="You were timed out in {server}. Reason: {reason}"><%= cfg.dm_timeout_message || '' %></textarea>
+              </div>
+              <div class="field">
+                <label>Warn DM message</label>
+                <textarea name="dmWarn" placeholder="You were warned in {server}. Reason: {reason}"><%= cfg.dm_warn_message || '' %></textarea>
+                <div class="pill-row">
+                  <span class="pill">{user}</span><span class="pill">{server}</span><span class="pill">{reason}</span>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
 <!-- WELCOME -->
         <div class="module-card">
           <div class="module-head" data-toggle>

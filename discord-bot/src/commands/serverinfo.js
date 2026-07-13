@@ -6,12 +6,16 @@ module.exports = {
     .setDescription('Show info about this server'),
 
   async execute(interaction) {
+    const { getGuildConfig } = require('../database');
+    const { getAccentColor } = require('../handlers/brandingManager');
+    const cfg = getGuildConfig(interaction.guild.id);
+
     const guild = interaction.guild;
     const textChannels = guild.channels.cache.filter(c => c.type === ChannelType.GuildText).size;
     const voiceChannels = guild.channels.cache.filter(c => c.type === ChannelType.GuildVoice).size;
 
     const embed = new EmbedBuilder()
-      .setColor(0x5865f2)
+      .setColor(getAccentColor(cfg))
       .setTitle(guild.name)
       .setThumbnail(guild.iconURL())
       .addFields(

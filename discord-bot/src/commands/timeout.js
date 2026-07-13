@@ -20,6 +20,9 @@ module.exports = {
 
   async execute(interaction) {
     const { getGuildConfig } = require('../database');
+    const { sendModDM } = require('../handlers/brandingManager');
+    const cfg = getGuildConfig(interaction.guild.id);
+
     const user = interaction.options.getUser('user');
     const durationStr = interaction.options.getString('duration');
     const reason = interaction.options.getString('reason') || 'No reason provided';
@@ -35,10 +38,11 @@ module.exports = {
       return interaction.reply({ content: '⚠️ I can\'t timeout this user (role hierarchy or missing permission).', ephemeral: true });
     }
 
+    await sendModDM(cfg, user, interaction.guild, 'timeout', reason, 'dm_timeout_message', `You were timed out in {server} for ${durationStr}. Reason: {reason}`);
+
     await member.timeout(ms, reason);
     await interaction.reply(`⏱️ Timed out **${user.tag}** for ${durationStr}. Reason: ${reason}`);
 
-    const cfg = getGuildConfig(interaction.guild.id);
     if (cfg.mod_log_channel) {
       const log = interaction.guild.channels.cache.get(cfg.mod_log_channel);
       log?.send({ embeds: [new EmbedBuilder().setColor(0xfaa61a).setTitle('Member Timed Out')

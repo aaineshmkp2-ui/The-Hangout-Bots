@@ -187,6 +187,21 @@ router.post('/:guildId/logs', requireGuildAccess, (req, res) => {
   res.redirect(`/dashboard/${req.params.guildId}`);
 });
 
+router.post('/:guildId/branding', requireGuildAccess, (req, res) => {
+  const { updateGuildConfig } = require('../../database');
+  const { accentColor, dmEnabled, dmKick, dmBan, dmTimeout, dmWarn } = req.body;
+  updateGuildConfig(req.params.guildId, {
+    embed_accent_color: accentColor || null,
+    mod_dm_enabled: dmEnabled ? 1 : 0,
+    dm_kick_message: dmKick || null,
+    dm_ban_message: dmBan || null,
+    dm_timeout_message: dmTimeout || null,
+    dm_warn_message: dmWarn || null,
+  });
+  setFlash(req, 'Branding & notification settings saved.');
+  res.redirect(`/dashboard/${req.params.guildId}`);
+});
+
 router.post('/:guildId/leveling', requireGuildAccess, (req, res) => {
   const { updateGuildConfig } = require('../../database');
   const { enabled, channel, message } = req.body;

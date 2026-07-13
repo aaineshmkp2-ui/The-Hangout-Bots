@@ -10,6 +10,7 @@ module.exports = {
 
   async execute(interaction) {
     const { db, getGuildConfig } = require('../database');
+    const { sendModDM } = require('../handlers/brandingManager');
     const user = interaction.options.getUser('user');
     const reason = interaction.options.getString('reason');
 
@@ -21,9 +22,9 @@ module.exports = {
 
     await interaction.reply(`⚠️ Warned **${user.tag}**. Reason: ${reason}\nThey now have **${count}** warning(s).`);
 
-    user.send(`You were warned in **${interaction.guild.name}**. Reason: ${reason}`).catch(() => {});
-
     const cfg = getGuildConfig(interaction.guild.id);
+    await sendModDM(cfg, user, interaction.guild, 'warn', reason, 'dm_warn_message', 'You were warned in {server}. Reason: {reason}');
+
     if (cfg.mod_log_channel) {
       const log = interaction.guild.channels.cache.get(cfg.mod_log_channel);
       log?.send({ embeds: [new EmbedBuilder().setColor(0xfaa61a).setTitle('Member Warned')

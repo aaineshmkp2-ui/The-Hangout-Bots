@@ -183,6 +183,12 @@ const migrations = [
   "ALTER TABLE guild_config ADD COLUMN ticket_panel_description TEXT",
   "ALTER TABLE guild_config ADD COLUMN ticket_panel_color TEXT",
   "ALTER TABLE guild_config ADD COLUMN ticket_panel_image TEXT",
+  "ALTER TABLE guild_config ADD COLUMN embed_accent_color TEXT",
+  "ALTER TABLE guild_config ADD COLUMN mod_dm_enabled INTEGER DEFAULT 1",
+  "ALTER TABLE guild_config ADD COLUMN dm_kick_message TEXT",
+  "ALTER TABLE guild_config ADD COLUMN dm_ban_message TEXT",
+  "ALTER TABLE guild_config ADD COLUMN dm_timeout_message TEXT",
+  "ALTER TABLE guild_config ADD COLUMN dm_warn_message TEXT",
 ];
 for (const sql of migrations) {
   try { db.exec(sql); } catch (e) { /* column already exists, ignore */ }

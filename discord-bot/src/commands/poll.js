@@ -10,11 +10,16 @@ module.exports = {
     .addStringOption(o => o.setName('options').setDescription('Comma-separated options (2-8). Leave blank for a yes/no poll.')),
 
   async execute(interaction) {
+    const { getGuildConfig } = require('../database');
+    const { getAccentColor } = require('../handlers/brandingManager');
+    const cfg = getGuildConfig(interaction.guild.id);
+    const color = getAccentColor(cfg);
+
     const question = interaction.options.getString('question');
     const optionsStr = interaction.options.getString('options');
 
     if (!optionsStr) {
-      const embed = new EmbedBuilder().setColor(0x5865f2).setTitle('📊 Poll').setDescription(question);
+      const embed = new EmbedBuilder().setColor(color).setTitle('📊 Poll').setDescription(question);
       const msg = await interaction.reply({ embeds: [embed], fetchReply: true });
       await msg.react('👍');
       await msg.react('👎');
@@ -27,7 +32,7 @@ module.exports = {
     }
 
     const description = options.map((opt, i) => `${NUMBER_EMOJIS[i]} ${opt}`).join('\n');
-    const embed = new EmbedBuilder().setColor(0x5865f2).setTitle(`📊 ${question}`).setDescription(description);
+    const embed = new EmbedBuilder().setColor(color).setTitle(`📊 ${question}`).setDescription(description);
     const msg = await interaction.reply({ embeds: [embed], fetchReply: true });
     for (let i = 0; i < options.length; i++) await msg.react(NUMBER_EMOJIS[i]);
   },

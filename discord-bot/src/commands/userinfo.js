@@ -7,11 +7,15 @@ module.exports = {
     .addUserOption(o => o.setName('user').setDescription('User to check')),
 
   async execute(interaction) {
+    const { getGuildConfig } = require('../database');
+    const { getAccentColor } = require('../handlers/brandingManager');
+    const cfg = getGuildConfig(interaction.guild.id);
+
     const user = interaction.options.getUser('user') || interaction.user;
     const member = await interaction.guild.members.fetch(user.id).catch(() => null);
 
     const embed = new EmbedBuilder()
-      .setColor(0x5865f2)
+      .setColor(getAccentColor(cfg))
       .setTitle(user.tag)
       .setThumbnail(user.displayAvatarURL())
       .addFields(

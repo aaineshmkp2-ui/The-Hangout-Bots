@@ -11,6 +11,9 @@ module.exports = {
 
   async execute(interaction) {
     const { getGuildConfig } = require('../database');
+    const { sendModDM } = require('../handlers/brandingManager');
+    const cfg = getGuildConfig(interaction.guild.id);
+
     const user = interaction.options.getUser('user');
     const reason = interaction.options.getString('reason') || 'No reason provided';
     const deleteDays = interaction.options.getInteger('delete_days') || 0;
@@ -20,10 +23,11 @@ module.exports = {
       return interaction.reply({ content: '⚠️ I can\'t ban this user (role hierarchy or missing permission).', ephemeral: true });
     }
 
+    await sendModDM(cfg, user, interaction.guild, 'ban', reason, 'dm_ban_message', 'You were banned from {server}. Reason: {reason}');
+
     await interaction.guild.members.ban(user.id, { reason, deleteMessageSeconds: deleteDays * 86400 });
     await interaction.reply(`🔨 Banned **${user.tag}**. Reason: ${reason}`);
 
-    const cfg = getGuildConfig(interaction.guild.id);
     if (cfg.mod_log_channel) {
       const log = interaction.guild.channels.cache.get(cfg.mod_log_channel);
       log?.send({ embeds: [new EmbedBuilder().setColor(0xed4245).setTitle('Member Banned')

@@ -14,6 +14,10 @@ module.exports = {
     .addStringOption(o => o.setName('footer').setDescription('Small text at the bottom')),
 
   async execute(interaction) {
+    const { getGuildConfig } = require('../database');
+    const { getAccentColor } = require('../handlers/brandingManager');
+    const cfg = getGuildConfig(interaction.guild.id);
+
     const description = interaction.options.getString('description').replaceAll('\\n', '\n');
     const channel = interaction.options.getChannel('channel') || interaction.channel;
     const title = interaction.options.getString('title');
@@ -22,7 +26,7 @@ module.exports = {
     const thumbnail = interaction.options.getString('thumbnail');
     const footer = interaction.options.getString('footer');
 
-    const embed = new EmbedBuilder().setDescription(description).setColor(color || 0x5865f2);
+    const embed = new EmbedBuilder().setDescription(description).setColor(color || getAccentColor(cfg));
     if (title) embed.setTitle(title);
     if (image) embed.setImage(image);
     if (thumbnail) embed.setThumbnail(thumbnail);
