@@ -26,9 +26,16 @@
         <div class="stat-chip"><div class="num"><%= stats.rankedMembers %></div><div class="label">Ranked members</div></div>
       </div>
 
-      <div class="panel-grid">
+      <div class="jump-row">
+        <a href="#section-community" class="jump-pill">👋 Community</a>
+        <a href="#section-moderation-safety" class="jump-pill">🛡️ Moderation & Safety</a>
+        <a href="#section-engagement" class="jump-pill">🎉 Engagement</a>
+      </div>
 
-        <!-- WELCOME -->
+      <div class="panel-grid">
+        <div class="section-label" id="section-community">Community</div>
+
+<!-- WELCOME -->
         <div class="module-card">
           <div class="module-head" data-toggle>
             <div class="module-head-left">
@@ -82,7 +89,7 @@
           </div>
         </div>
 
-        <!-- LEAVE -->
+<!-- LEAVE -->
         <div class="module-card">
           <div class="module-head" data-toggle>
             <div class="module-head-left">
@@ -131,7 +138,328 @@
           </div>
         </div>
 
-        <!-- TICKETS -->
+<!-- AUTO ROLE -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">🎭</div>
+              <div>
+                <div class="module-title">Auto-Role</div>
+                <div class="module-desc"><%= cfg.autorole_id ? ('Gives ' + (roles.find(r => r.id === cfg.autorole_id)?.name || 'unknown role')) : 'Not configured' %></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.autorole_id ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/autorole">
+              <div class="field">
+                <label>Role to auto-assign</label>
+                <select name="role">
+                  <option value="">— None —</option>
+                  <% roles.forEach(r => { %>
+                    <option value="<%= r.id %>" <%= cfg.autorole_id === r.id ? 'selected' : '' %>><%= r.name %></option>
+                  <% }) %>
+                </select>
+                <div class="hint">Given automatically to every new member on join.</div>
+              </div>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+<!-- LEVELING -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">⭐</div>
+              <div>
+                <div class="module-title">Leveling</div>
+                <div class="module-desc"><%= stats.rankedMembers %> ranked members · <a href="/dashboard/<%= guild.id %>/leaderboard" style="color:var(--teal);" onclick="event.stopPropagation()">View leaderboard</a></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.leveling_enabled ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/leveling">
+              <div class="checkbox-row">
+                <label class="switch">
+                  <input type="checkbox" name="enabled" <%= cfg.leveling_enabled ? 'checked' : '' %>>
+                  <span class="switch-track"></span>
+                </label>
+                <label>Enabled</label>
+              </div>
+              <div class="field">
+                <label>Level-up announcement channel</label>
+                <select name="channel">
+                  <option value="">— Post in the channel they leveled up in —</option>
+                  <% textChannels.forEach(c => { %>
+                    <option value="<%= c.id %>" <%= cfg.level_up_channel === c.id ? 'selected' : '' %>>#<%= c.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="field">
+                <label>Level-up message</label>
+                <textarea name="message" placeholder="🎉 {user} just reached level {level}!"><%= cfg.level_up_message || '' %></textarea>
+                <div class="pill-row">
+                  <span class="pill">{user}</span><span class="pill">{username}</span><span class="pill">{server}</span><span class="pill">{level}</span>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+<!-- INVITE TRACKER -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">📨</div>
+              <div>
+                <div class="module-title">Invite Tracker</div>
+                <div class="module-desc"><a href="/dashboard/<%= guild.id %>/invites" style="color:var(--teal);" onclick="event.stopPropagation()">View invite leaderboard</a></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.invite_tracker_enabled ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/invite-tracker">
+              <div class="checkbox-row">
+                <label class="switch">
+                  <input type="checkbox" name="enabled" <%= cfg.invite_tracker_enabled ? 'checked' : '' %>>
+                  <span class="switch-track"></span>
+                </label>
+                <label>Enabled</label>
+              </div>
+              <p style="color:var(--text-muted);font-size:13px;margin-top:0;">Tracks who invited each new member. Check with <code>/invites</code> in Discord.</p>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="section-label" id="section-moderation-safety">Moderation & Safety</div>
+
+<!-- AUTO MOD -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">🧹</div>
+              <div>
+                <div class="module-title">Auto-Moderation</div>
+                <div class="module-desc">Mass mentions, invite links, excessive caps</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.automod_enabled ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/automod">
+              <div class="checkbox-row">
+                <label class="switch">
+                  <input type="checkbox" name="enabled" <%= cfg.automod_enabled ? 'checked' : '' %>>
+                  <span class="switch-track"></span>
+                </label>
+                <label>Enabled</label>
+              </div>
+              <p style="color:var(--text-muted);font-size:13px;">
+                Auto-deletes messages with 5+ mentions, Discord invite links, or excessive CAPS LOCK. Members with Manage Messages are exempt.
+              </p>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+<!-- WARNING AUTO-PUNISH -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">⚡</div>
+              <div>
+                <div class="module-title">Warning Auto-Punish</div>
+                <div class="module-desc"><%= cfg.warn_threshold > 0 ? (cfg.warn_threshold + ' warnings → ' + cfg.warn_action) : 'Not configured' %></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.warn_threshold > 0 ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/warn-settings">
+              <div class="field">
+                <label>Warnings before auto-punish</label>
+                <input type="text" name="threshold" value="<%= cfg.warn_threshold || 0 %>" style="max-width:100px;">
+                <div class="hint">Set to 0 to disable.</div>
+              </div>
+              <div class="field">
+                <label>Action</label>
+                <select name="action">
+                  <option value="timeout" <%= cfg.warn_action === 'timeout' ? 'selected' : '' %>>Timeout</option>
+                  <option value="kick" <%= cfg.warn_action === 'kick' ? 'selected' : '' %>>Kick</option>
+                  <option value="ban" <%= cfg.warn_action === 'ban' ? 'selected' : '' %>>Ban</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Timeout duration (minutes, if action is Timeout)</label>
+                <input type="text" name="timeoutMinutes" value="<%= cfg.warn_timeout_minutes || 10 %>" style="max-width:100px;">
+              </div>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+<!-- BLACKLIST -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">🚫</div>
+              <div>
+                <div class="module-title">Word Blacklist</div>
+                <div class="module-desc"><%= stats.blacklistWords %> blocked word<%= stats.blacklistWords === 1 ? '' : 's' %></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.blacklist_enabled ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/blacklist">
+              <div class="checkbox-row">
+                <label class="switch">
+                  <input type="checkbox" name="enabled" <%= cfg.blacklist_enabled ? 'checked' : '' %>>
+                  <span class="switch-track"></span>
+                </label>
+                <label>Enabled</label>
+              </div>
+              <div class="field">
+                <label>Blocked words</label>
+                <textarea name="words" placeholder="one per line, or comma-separated"><%= blacklistWordList.join('\n') %></textarea>
+                <div class="hint">Messages containing any of these get deleted automatically. Saving replaces the full list.</div>
+              </div>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+<!-- JAIL -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">⛓️</div>
+              <div>
+                <div class="module-title">Jail System</div>
+                <div class="module-desc"><%= cfg.jail_role_id ? 'Configured' : 'Not configured' %></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.jail_role_id ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/jail">
+              <div class="field">
+                <label>Jail role</label>
+                <select name="role">
+                  <option value="">— Select a role —</option>
+                  <% roles.forEach(r => { %>
+                    <option value="<%= r.id %>" <%= cfg.jail_role_id === r.id ? 'selected' : '' %>><%= r.name %></option>
+                  <% }) %>
+                </select>
+                <div class="hint">Deny "View Channel" for this role everywhere except the jail channel below.</div>
+              </div>
+              <div class="field">
+                <label>Jail channel</label>
+                <select name="channel">
+                  <option value="">— Select a channel —</option>
+                  <% textChannels.forEach(c => { %>
+                    <option value="<%= c.id %>" <%= cfg.jail_channel_id === c.id ? 'selected' : '' %>>#<%= c.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+<!-- ANTI-NUKE -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">🛡️</div>
+              <div>
+                <div class="module-title">Anti-Nuke</div>
+                <div class="module-desc">Auto-quarantines rapid mass deletions/bans</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.antinuke_enabled ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/antinuke">
+              <div class="checkbox-row">
+                <label class="switch">
+                  <input type="checkbox" name="enabled" <%= cfg.antinuke_enabled ? 'checked' : '' %>>
+                  <span class="switch-track"></span>
+                </label>
+                <label>Enabled</label>
+              </div>
+              <p style="color:var(--text-muted);font-size:13px;">
+                If a non-owner member deletes 3+ channels/roles or bans 3+ members within 10 seconds, the bot strips their roles and logs it to your mod-log channel. It never auto-bans — just quarantines for you to review.
+              </p>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+<!-- LOGS -->
+        <div class="module-card">
+          <div class="module-head" data-toggle>
+            <div class="module-head-left">
+              <div class="module-icon">📝</div>
+              <div>
+                <div class="module-title">Moderation & Ticket Logs</div>
+                <div class="module-desc"><%= cfg.mod_log_channel ? ('Logging to #' + (textChannels.find(c => c.id === cfg.mod_log_channel)?.name || 'unknown-channel')) : 'Not configured' %></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="led <%= cfg.mod_log_channel ? 'on' : 'off' %>"></span>
+              <span class="chevron">▸</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <form method="POST" action="/dashboard/<%= guild.id %>/logs">
+              <div class="field">
+                <label>Log channel</label>
+                <select name="channel">
+                  <option value="">— None —</option>
+                  <% textChannels.forEach(c => { %>
+                    <option value="<%= c.id %>" <%= cfg.mod_log_channel === c.id ? 'selected' : '' %>>#<%= c.name %></option>
+                  <% }) %>
+                </select>
+                <div class="hint">Kicks, bans, timeouts, warnings, and ticket closures get logged here.</div>
+              </div>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="section-label" id="section-engagement">Engagement</div>
+
+<!-- TICKETS -->
         <div class="module-card">
           <div class="module-head" data-toggle>
             <div class="module-head-left">
@@ -193,292 +521,7 @@
           </div>
         </div>
 
-        <!-- AUTO MOD -->
-        <div class="module-card">
-          <div class="module-head" data-toggle>
-            <div class="module-head-left">
-              <div class="module-icon">🧹</div>
-              <div>
-                <div class="module-title">Auto-Moderation</div>
-                <div class="module-desc">Mass mentions, invite links, excessive caps</div>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:14px;">
-              <span class="led <%= cfg.automod_enabled ? 'on' : 'off' %>"></span>
-              <span class="chevron">▸</span>
-            </div>
-          </div>
-          <div class="module-body">
-            <form method="POST" action="/dashboard/<%= guild.id %>/automod">
-              <div class="checkbox-row">
-                <label class="switch">
-                  <input type="checkbox" name="enabled" <%= cfg.automod_enabled ? 'checked' : '' %>>
-                  <span class="switch-track"></span>
-                </label>
-                <label>Enabled</label>
-              </div>
-              <p style="color:var(--text-muted);font-size:13px;">
-                Auto-deletes messages with 5+ mentions, Discord invite links, or excessive CAPS LOCK. Members with Manage Messages are exempt.
-              </p>
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </form>
-          </div>
-        </div>
-
-        <!-- WARNING AUTO-PUNISH -->
-        <div class="module-card">
-          <div class="module-head" data-toggle>
-            <div class="module-head-left">
-              <div class="module-icon">⚡</div>
-              <div>
-                <div class="module-title">Warning Auto-Punish</div>
-                <div class="module-desc"><%= cfg.warn_threshold > 0 ? (cfg.warn_threshold + ' warnings → ' + cfg.warn_action) : 'Not configured' %></div>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:14px;">
-              <span class="led <%= cfg.warn_threshold > 0 ? 'on' : 'off' %>"></span>
-              <span class="chevron">▸</span>
-            </div>
-          </div>
-          <div class="module-body">
-            <form method="POST" action="/dashboard/<%= guild.id %>/warn-settings">
-              <div class="field">
-                <label>Warnings before auto-punish</label>
-                <input type="text" name="threshold" value="<%= cfg.warn_threshold || 0 %>" style="max-width:100px;">
-                <div class="hint">Set to 0 to disable.</div>
-              </div>
-              <div class="field">
-                <label>Action</label>
-                <select name="action">
-                  <option value="timeout" <%= cfg.warn_action === 'timeout' ? 'selected' : '' %>>Timeout</option>
-                  <option value="kick" <%= cfg.warn_action === 'kick' ? 'selected' : '' %>>Kick</option>
-                  <option value="ban" <%= cfg.warn_action === 'ban' ? 'selected' : '' %>>Ban</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Timeout duration (minutes, if action is Timeout)</label>
-                <input type="text" name="timeoutMinutes" value="<%= cfg.warn_timeout_minutes || 10 %>" style="max-width:100px;">
-              </div>
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </form>
-          </div>
-        </div>
-
-        <!-- AUTO ROLE -->
-        <div class="module-card">
-          <div class="module-head" data-toggle>
-            <div class="module-head-left">
-              <div class="module-icon">🎭</div>
-              <div>
-                <div class="module-title">Auto-Role</div>
-                <div class="module-desc"><%= cfg.autorole_id ? ('Gives ' + (roles.find(r => r.id === cfg.autorole_id)?.name || 'unknown role')) : 'Not configured' %></div>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:14px;">
-              <span class="led <%= cfg.autorole_id ? 'on' : 'off' %>"></span>
-              <span class="chevron">▸</span>
-            </div>
-          </div>
-          <div class="module-body">
-            <form method="POST" action="/dashboard/<%= guild.id %>/autorole">
-              <div class="field">
-                <label>Role to auto-assign</label>
-                <select name="role">
-                  <option value="">— None —</option>
-                  <% roles.forEach(r => { %>
-                    <option value="<%= r.id %>" <%= cfg.autorole_id === r.id ? 'selected' : '' %>><%= r.name %></option>
-                  <% }) %>
-                </select>
-                <div class="hint">Given automatically to every new member on join.</div>
-              </div>
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </form>
-          </div>
-        </div>
-
-        <!-- LOGS -->
-        <div class="module-card">
-          <div class="module-head" data-toggle>
-            <div class="module-head-left">
-              <div class="module-icon">📝</div>
-              <div>
-                <div class="module-title">Moderation & Ticket Logs</div>
-                <div class="module-desc"><%= cfg.mod_log_channel ? ('Logging to #' + (textChannels.find(c => c.id === cfg.mod_log_channel)?.name || 'unknown-channel')) : 'Not configured' %></div>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:14px;">
-              <span class="led <%= cfg.mod_log_channel ? 'on' : 'off' %>"></span>
-              <span class="chevron">▸</span>
-            </div>
-          </div>
-          <div class="module-body">
-            <form method="POST" action="/dashboard/<%= guild.id %>/logs">
-              <div class="field">
-                <label>Log channel</label>
-                <select name="channel">
-                  <option value="">— None —</option>
-                  <% textChannels.forEach(c => { %>
-                    <option value="<%= c.id %>" <%= cfg.mod_log_channel === c.id ? 'selected' : '' %>>#<%= c.name %></option>
-                  <% }) %>
-                </select>
-                <div class="hint">Kicks, bans, timeouts, warnings, and ticket closures get logged here.</div>
-              </div>
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </form>
-          </div>
-        </div>
-
-        <!-- LEVELING -->
-        <div class="module-card">
-          <div class="module-head" data-toggle>
-            <div class="module-head-left">
-              <div class="module-icon">⭐</div>
-              <div>
-                <div class="module-title">Leveling</div>
-                <div class="module-desc"><%= stats.rankedMembers %> ranked members · <a href="/dashboard/<%= guild.id %>/leaderboard" style="color:var(--teal);" onclick="event.stopPropagation()">View leaderboard</a></div>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:14px;">
-              <span class="led <%= cfg.leveling_enabled ? 'on' : 'off' %>"></span>
-              <span class="chevron">▸</span>
-            </div>
-          </div>
-          <div class="module-body">
-            <form method="POST" action="/dashboard/<%= guild.id %>/leveling">
-              <div class="checkbox-row">
-                <label class="switch">
-                  <input type="checkbox" name="enabled" <%= cfg.leveling_enabled ? 'checked' : '' %>>
-                  <span class="switch-track"></span>
-                </label>
-                <label>Enabled</label>
-              </div>
-              <div class="field">
-                <label>Level-up announcement channel</label>
-                <select name="channel">
-                  <option value="">— Post in the channel they leveled up in —</option>
-                  <% textChannels.forEach(c => { %>
-                    <option value="<%= c.id %>" <%= cfg.level_up_channel === c.id ? 'selected' : '' %>>#<%= c.name %></option>
-                  <% }) %>
-                </select>
-              </div>
-              <div class="field">
-                <label>Level-up message</label>
-                <textarea name="message" placeholder="🎉 {user} just reached level {level}!"><%= cfg.level_up_message || '' %></textarea>
-                <div class="pill-row">
-                  <span class="pill">{user}</span><span class="pill">{username}</span><span class="pill">{server}</span><span class="pill">{level}</span>
-                </div>
-              </div>
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </form>
-          </div>
-        </div>
-
-        <!-- INVITE TRACKER -->
-        <div class="module-card">
-          <div class="module-head" data-toggle>
-            <div class="module-head-left">
-              <div class="module-icon">📨</div>
-              <div>
-                <div class="module-title">Invite Tracker</div>
-                <div class="module-desc"><a href="/dashboard/<%= guild.id %>/invites" style="color:var(--teal);" onclick="event.stopPropagation()">View invite leaderboard</a></div>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:14px;">
-              <span class="led <%= cfg.invite_tracker_enabled ? 'on' : 'off' %>"></span>
-              <span class="chevron">▸</span>
-            </div>
-          </div>
-          <div class="module-body">
-            <form method="POST" action="/dashboard/<%= guild.id %>/invite-tracker">
-              <div class="checkbox-row">
-                <label class="switch">
-                  <input type="checkbox" name="enabled" <%= cfg.invite_tracker_enabled ? 'checked' : '' %>>
-                  <span class="switch-track"></span>
-                </label>
-                <label>Enabled</label>
-              </div>
-              <p style="color:var(--text-muted);font-size:13px;margin-top:0;">Tracks who invited each new member. Check with <code>/invites</code> in Discord.</p>
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </form>
-          </div>
-        </div>
-
-        <!-- JAIL -->
-        <div class="module-card">
-          <div class="module-head" data-toggle>
-            <div class="module-head-left">
-              <div class="module-icon">⛓️</div>
-              <div>
-                <div class="module-title">Jail System</div>
-                <div class="module-desc"><%= cfg.jail_role_id ? 'Configured' : 'Not configured' %></div>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:14px;">
-              <span class="led <%= cfg.jail_role_id ? 'on' : 'off' %>"></span>
-              <span class="chevron">▸</span>
-            </div>
-          </div>
-          <div class="module-body">
-            <form method="POST" action="/dashboard/<%= guild.id %>/jail">
-              <div class="field">
-                <label>Jail role</label>
-                <select name="role">
-                  <option value="">— Select a role —</option>
-                  <% roles.forEach(r => { %>
-                    <option value="<%= r.id %>" <%= cfg.jail_role_id === r.id ? 'selected' : '' %>><%= r.name %></option>
-                  <% }) %>
-                </select>
-                <div class="hint">Deny "View Channel" for this role everywhere except the jail channel below.</div>
-              </div>
-              <div class="field">
-                <label>Jail channel</label>
-                <select name="channel">
-                  <option value="">— Select a channel —</option>
-                  <% textChannels.forEach(c => { %>
-                    <option value="<%= c.id %>" <%= cfg.jail_channel_id === c.id ? 'selected' : '' %>>#<%= c.name %></option>
-                  <% }) %>
-                </select>
-              </div>
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </form>
-          </div>
-        </div>
-
-        <!-- BLACKLIST -->
-        <div class="module-card">
-          <div class="module-head" data-toggle>
-            <div class="module-head-left">
-              <div class="module-icon">🚫</div>
-              <div>
-                <div class="module-title">Word Blacklist</div>
-                <div class="module-desc"><%= stats.blacklistWords %> blocked word<%= stats.blacklistWords === 1 ? '' : 's' %></div>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:14px;">
-              <span class="led <%= cfg.blacklist_enabled ? 'on' : 'off' %>"></span>
-              <span class="chevron">▸</span>
-            </div>
-          </div>
-          <div class="module-body">
-            <form method="POST" action="/dashboard/<%= guild.id %>/blacklist">
-              <div class="checkbox-row">
-                <label class="switch">
-                  <input type="checkbox" name="enabled" <%= cfg.blacklist_enabled ? 'checked' : '' %>>
-                  <span class="switch-track"></span>
-                </label>
-                <label>Enabled</label>
-              </div>
-              <div class="field">
-                <label>Blocked words</label>
-                <textarea name="words" placeholder="one per line, or comma-separated"><%= blacklistWordList.join('\n') %></textarea>
-                <div class="hint">Messages containing any of these get deleted automatically. Saving replaces the full list.</div>
-              </div>
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </form>
-          </div>
-        </div>
-
-        <!-- STARBOARD -->
+<!-- STARBOARD -->
         <div class="module-card">
           <div class="module-head" data-toggle>
             <div class="module-head-left">
@@ -521,39 +564,7 @@
           </div>
         </div>
 
-        <!-- ANTI-NUKE -->
-        <div class="module-card">
-          <div class="module-head" data-toggle>
-            <div class="module-head-left">
-              <div class="module-icon">🛡️</div>
-              <div>
-                <div class="module-title">Anti-Nuke</div>
-                <div class="module-desc">Auto-quarantines rapid mass deletions/bans</div>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:14px;">
-              <span class="led <%= cfg.antinuke_enabled ? 'on' : 'off' %>"></span>
-              <span class="chevron">▸</span>
-            </div>
-          </div>
-          <div class="module-body">
-            <form method="POST" action="/dashboard/<%= guild.id %>/antinuke">
-              <div class="checkbox-row">
-                <label class="switch">
-                  <input type="checkbox" name="enabled" <%= cfg.antinuke_enabled ? 'checked' : '' %>>
-                  <span class="switch-track"></span>
-                </label>
-                <label>Enabled</label>
-              </div>
-              <p style="color:var(--text-muted);font-size:13px;">
-                If a non-owner member deletes 3+ channels/roles or bans 3+ members within 10 seconds, the bot strips their roles and logs it to your mod-log channel. It never auto-bans — just quarantines for you to review.
-              </p>
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </form>
-          </div>
-        </div>
-
-        <!-- SELF-ROLES + GIVEAWAYS INFO -->
+<!-- SELF-ROLES + GIVEAWAYS INFO -->
         <div class="module-card">
           <div class="module-head" data-toggle>
             <div class="module-head-left">
@@ -585,6 +596,7 @@
             </div>
           </div>
         </div>
+
 
       </div>
     </main>

@@ -27,7 +27,7 @@
 
 * { box-sizing: border-box; }
 
-html { color-scheme: dark; }
+html { color-scheme: dark; scroll-behavior: smooth; }
 
 body {
   margin: 0;
@@ -60,6 +60,7 @@ code, .mono { font-family: var(--font-mono); }
 
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
 }
 
 /* ===== Login page ===== */
@@ -222,6 +223,24 @@ code, .mono { font-family: var(--font-mono); }
 }
 .stat-chip .num { font-family: var(--font-display); font-size: 22px; color: var(--amber); }
 .stat-chip .label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* ===== Section grouping ===== */
+.jump-row { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+.jump-pill {
+  font-family: var(--font-display); font-weight: 600; font-size: 12.5px;
+  padding: 7px 14px; border-radius: 999px;
+  background: var(--panel); border: 1px solid var(--border); color: var(--text-muted);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.jump-pill:hover { border-color: var(--amber); color: var(--amber); }
+
+.section-label {
+  font-family: var(--font-display); font-weight: 600; font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim);
+  margin: 28px 0 4px; padding-top: 8px; border-top: 1px solid var(--border);
+  scroll-margin-top: 24px;
+}
+.section-label:first-child { margin-top: 0; padding-top: 0; border-top: none; }
 
 /* ===== Module panel (breaker card) ===== */
 .panel-grid { display: flex; flex-direction: column; gap: 14px; }
