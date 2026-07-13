@@ -17,6 +17,8 @@ Free, self-hosted Discord bot with **both** an in-Discord admin panel (`/panel`)
 - **Auto-purge** — `/autopurge add|list|remove` clears a channel on a recurring schedule
 - **Custom commands** — `/customcommand add|list|remove`, type the trigger in chat and the bot replies (different from `/tag`, which needs the slash command)
 - **Voice-Text Linking** — `/voicelink add|list|remove` auto-opens a text channel for anyone who joins a linked voice channel, and revokes it when they leave
+- **Utility & info** — `/userinfo`, `/serverinfo`, `/avatar`, `/roleinfo`, `/ping`
+- **Fun & community** — `/poll`, `/roll`, `/coinflip`, `/suggest`, `/report`
 - **Custom embeds** — `/embed-send` posts a fully custom message with your own title, color, image, and thumbnail
 - **Custom tags** — `/tag create|edit|delete|list|send` for reusable text snippets
 - **Auto-messages** — `/automessage add|list|remove` posts something on a recurring schedule

@@ -17,7 +17,8 @@ module.exports = {
         { name: '⭐ Leveling & Invites', value: '`/rank` `/leaderboard` `/invites`' },
         { name: '🎉 Giveaways', value: '`/giveaway start` `/giveaway end` `/giveaway reroll`' },
         { name: '🛡️ Moderation', value: '`/kick` `/ban` `/timeout` `/warn` `/warnings` `/clear` `/lock` `/unlock` `/jail` `/unjail` `/snipe` `/slowmode`' },
-        { name: '🧰 Utility', value: '`/afk` `/remind`' },
+        { name: '🧰 Utility', value: '`/afk` `/remind` `/userinfo` `/serverinfo` `/avatar` `/roleinfo` `/ping`' },
+        { name: '🎲 Fun & Community', value: '`/poll` `/roll` `/coinflip` `/suggest` `/report`' },
         { name: '🎫 Tickets', value: 'Click **Create Ticket** on the panel posted via `/panel` → Tickets.' },
         { name: '🌐 Web Dashboard', value: 'Welcome/Leave/Tickets/Leveling/Invites/Blacklist/Jail/Starboard/Anti-Nuke all configurable at your dashboard URL — sign in with Discord.' }
       )
